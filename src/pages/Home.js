@@ -1,16 +1,26 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaBars, FaSignOutAlt } from "react-icons/fa";
 import { BsFilterRight } from "react-icons/bs";
 import PersonModel from "../components/PersonModel";
 import { data } from "../utils/data";
-import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { MyContext } from "../context/DataContext";
 
 const Home = () => {
+  const { data: actors } = useContext(MyContext);
   const [user, setUser] = useState(null);
+  const [showFilter, setShowFilter] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [gender, setGender] = useState("");
   const { id } = useParams();
 
+  const handleChange = (event) => {
+    setSelectedLocation(event.target.value);
+  };
+  const handleGender = (event) => {
+    setGender(event.target.value);
+  };
+  console.log(actors);
   useEffect(() => {
     const user = data.find((person) => person._id === id);
     setUser(user);
@@ -60,7 +70,7 @@ const Home = () => {
                     : "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80"
                 }
                 alt="/"
-                class="w-full h-96 object-cover rounded"
+                className="w-full h-96 object-cover rounded"
               />
             </div>
           </div>
@@ -68,12 +78,89 @@ const Home = () => {
         <div className="col-span-3 bg-gray-200">
           <div className="flex items-center justify-between p-5 ">
             <p>Events</p>
-            <button>
+            <button onClick={() => setShowFilter(!showFilter)}>
               <BsFilterRight size={28} />
             </button>
           </div>
 
-          <div className="p-5  overflow-y-scroll h-[73vh]">
+          <div className={`px-5 ${!showFilter ? "" : "hidden"}`}>
+            <form>
+              <div className="mb-1">
+                <span className="text-sm mr-1">Location :</span>
+                <input
+                  type="radio"
+                  id="Chennai"
+                  name="location"
+                  value="Chennai"
+                  onChange={handleChange}
+                  checked={selectedLocation === "Chennai"}
+                />
+                <label htmlFor="Chennai" className="mx-1 text-sm">
+                  Chennai
+                </label>
+                <input
+                  type="radio"
+                  id="Hyderabad"
+                  name="location"
+                  value="Hyderabad"
+                  onChange={handleChange}
+                  checked={selectedLocation === "Hyderabad"}
+                />
+                <label htmlFor="Hyderabad" className="mx-1 text-sm">
+                  Hyderabad
+                </label>
+                <input
+                  type="radio"
+                  id="Bangalore"
+                  name="location"
+                  value="Bangalore"
+                  onChange={handleChange}
+                  checked={selectedLocation === "Bangalore"}
+                />
+                <label htmlFor="Bangalore" className="mx-1 text-sm">
+                  Bangalore
+                </label>
+              </div>
+              <div className="mb-1">
+                <span className="text-sm mr-1">Gender :</span>
+                <input
+                  type="radio"
+                  id="male"
+                  name="gender"
+                  value="Male"
+                  onChange={handleGender}
+                  checked={gender === "Male"}
+                />
+                <label htmlFor="male" className="mx-1 text-sm">
+                  Male
+                </label>
+                <input
+                  type="radio"
+                  id="female"
+                  name="gender"
+                  value="Female"
+                  onChange={handleGender}
+                  checked={gender === "Female"}
+                />
+                <label htmlFor="female" className="mx-1 text-sm">
+                  Female
+                </label>
+              </div>
+              <div>
+                <span className="text-sm mr-1">Date : </span>
+                <input
+                  type="date"
+                  className="mr-2 bg-white px-1 rounded text-sm"
+                />
+              </div>
+            </form>
+          </div>
+
+          <div
+            className={`p-5  overflow-y-scroll ${
+              showFilter ? "h-[73vh]" : "h-[60vh]"
+            }`}
+          >
             {data.map((person) => (
               <PersonModel key={person._id} {...person} />
             ))}

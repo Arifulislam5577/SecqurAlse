@@ -1,4 +1,3 @@
-import { db } from "./config";
 export const data = [
   {
     _id: "EVT0001",
@@ -451,19 +450,3 @@ export const data = [
     image: "/images/Female25.jpg",
   },
 ];
-
-const insertDataToFirestore = async (data) => {
-  const batch = db.batch();
-  data.forEach((item) => {
-    const docRef = db.collection("actors").doc(item._id);
-    batch.set(docRef, item);
-  });
-  try {
-    await batch.commit();
-    console.log("Data inserted successfully!");
-  } catch (error) {
-    console.error("Error inserting data: ", error);
-  }
-};
-
-insertDataToFirestore(data);
